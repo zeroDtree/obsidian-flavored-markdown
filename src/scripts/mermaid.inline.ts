@@ -192,7 +192,7 @@ async function renderMermaidDiagrams() {
 
   mermaidImport ||= await import(
     // @ts-expect-error -- remote ESM import
-    "https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.esm.min.mjs"
+    "https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.12.0/mermaid.esm.min.mjs"
   );
   const mermaid = mermaidImport.default;
 
