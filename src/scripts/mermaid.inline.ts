@@ -191,9 +191,10 @@ async function renderMermaidDiagrams() {
   const nodes = center.querySelectorAll("code.mermaid") as NodeListOf<HTMLElement>;
   if (nodes.length === 0) return;
 
+  // Crossing hops are drawn by Mermaid 12. layout-elk 1.x is the build that peers this major.
   mermaidImport ||= await import(
     // @ts-expect-error -- remote ESM import
-    "https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.12.0/mermaid.esm.min.mjs"
+    "https://cdn.jsdelivr.net/npm/mermaid@12.3.0/dist/mermaid.esm.min.mjs"
   );
   const mermaid = mermaidImport.default;
 
@@ -201,7 +202,7 @@ async function renderMermaidDiagrams() {
     const elkLayouts = (
       await import(
         // @ts-expect-error -- remote ESM import
-        "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.3/dist/mermaid-layout-elk.esm.min.mjs"
+        "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@1.0.2/dist/mermaid-layout-elk.esm.min.mjs"
       )
     ).default;
     mermaid.registerLayoutLoaders(elkLayouts);
@@ -237,6 +238,9 @@ async function renderMermaidDiagrams() {
       securityLevel: "loose",
       theme: darkMode ? "dark" : "base",
       layout: "elk",
+      elk: {
+        lineHops: true,
+      },
       themeVariables: {
         fontFamily: computedStyleMap["--codeFont"],
         primaryColor: computedStyleMap["--light"],
