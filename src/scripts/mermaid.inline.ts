@@ -185,6 +185,7 @@ const cssVars = [
 ] as const;
 
 let mermaidImport = undefined;
+let elkRegistered = false;
 async function renderMermaidDiagrams() {
   const center = document.querySelector(".center") as HTMLElement;
   const nodes = center.querySelectorAll("code.mermaid") as NodeListOf<HTMLElement>;
@@ -195,6 +196,17 @@ async function renderMermaidDiagrams() {
     "https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.12.0/mermaid.esm.min.mjs"
   );
   const mermaid = mermaidImport.default;
+
+  if (!elkRegistered) {
+    const elkLayouts = (
+      await import(
+        // @ts-expect-error -- remote ESM import
+        "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.3/dist/mermaid-layout-elk.esm.min.mjs"
+      )
+    ).default;
+    mermaid.registerLayoutLoaders(elkLayouts);
+    elkRegistered = true;
+  }
 
   const textMapping: WeakMap<HTMLElement, string> = new WeakMap();
   for (const node of nodes) {
@@ -224,6 +236,7 @@ async function renderMermaidDiagrams() {
       startOnLoad: false,
       securityLevel: "loose",
       theme: darkMode ? "dark" : "base",
+      layout: "elk",
       themeVariables: {
         fontFamily: computedStyleMap["--codeFont"],
         primaryColor: computedStyleMap["--light"],
